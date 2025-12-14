@@ -19,6 +19,13 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin_or_moderator' => \App\Http\Middleware\AdminOrModeratorMiddleware::class,
         ]);
 
+        // Apply Inertia middleware to web routes
+        $middleware->web(
+            append: [
+                \App\Http\Middleware\HandleInertiaRequests::class,
+            ]
+        );
+
         // Apply API error handling to all API requests
         $middleware->append(\App\Http\Middleware\HandleApiErrors::class);
     })
