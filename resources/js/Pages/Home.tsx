@@ -56,17 +56,19 @@ export default function Home() {
               The community hub for <a href="https://yourstory-orcin.vercel.app/" target="_blank" rel="noopener noreferrer" className="font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">YourStory</a> - where writers, storytellers, and creative minds share their unique perspectives and connect globally.
             </p>
             <div className="flex flex-wrap gap-4">
-              <Link
-                href="/stories"
+              <a
+                href="https://yourstory-orcin.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 font-semibold shadow-xl hover:shadow-2xl transition-all transform hover:scale-105"
               >
-                🔍 Explore Stories
-              </Link>
+                ✍️ Get Started
+              </a>
               <Link
-                href="/register"
+                href="/stories"
                 className="px-8 py-4 border-2 border-indigo-600 text-indigo-600 dark:text-indigo-400 rounded-xl hover:bg-indigo-50 dark:hover:bg-slate-800 font-semibold transition-all transform hover:scale-105"
               >
-                ✍️ Get Started
+                🔍 Explore Community
               </Link>
             </div>
           </div>

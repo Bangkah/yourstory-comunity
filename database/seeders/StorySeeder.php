@@ -17,15 +17,21 @@ class StorySeeder extends Seeder
         // Create 3 stories per member
         foreach ($users as $user) {
             for ($i = 1; $i <= 3; $i++) {
-                $story = Story::create([
-                    'user_id' => $user->id,
-                    'title' => "Story by {$user->name} - Part $i",
-                    'body' => "This is a story written by {$user->name}. " .
-                        "It contains interesting content about their life and experiences.\n\n" .
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " .
-                        "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                    'is_published' => true,
-                ]);
+                // Ensure stories are idempotent (unique by user_id + title)
+                $title = "Story by {$user->name} - Part $i";
+                $story = Story::firstOrCreate(
+                    [
+                        'user_id' => $user->id,
+                        'title' => $title,
+                    ],
+                    [
+                        'body' => "This is a story written by {$user->name}. " .
+                            "It contains interesting content about their life and experiences.\n\n" .
+                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " .
+                            "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                        'is_published' => true,
+                    ]
+                );
 
                 // Add 2-4 root comments per story
                 for ($j = 1; $j <= rand(2, 4); $j++) {
