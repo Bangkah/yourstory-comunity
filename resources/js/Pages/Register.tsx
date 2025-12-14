@@ -1,108 +1,204 @@
-import { FormEvent } from 'react'
-import { useForm } from '@inertiajs/react'
+import { FormEvent, useState } from 'react'
+import { Link, router } from '@inertiajs/react'
 import Layout from '@/Layouts/Layout'
+import { useAuth } from '@/Context/AuthContext'
 
 export default function Register() {
-  const { data, setData, post, errors, processing } = useForm({
+  const { register } = useAuth()
+  const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
     password_confirmation: '',
   })
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [loading, setLoading] = useState(false)
 
-  const submit = (e: FormEvent) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: '' }))
+    }
+  }
+
+  const submit = async (e: FormEvent) => {
     e.preventDefault()
-    post('/api/register')
+    setLoading(true)
+    setErrors({})
+
+    try {
+      await register(
+        formData.name,
+        formData.email,
+        formData.password,
+        formData.password_confirmation
+      )
+      router.visit('/stories')
+    } catch (error: any) {
+      if (error.response?.data?.errors) {
+        setErrors(error.response.data.errors)
+      } else {
+        setErrors({
+          form: error.response?.data?.message || 'Registration failed',
+        })
+      }
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
     <Layout title="Create Account">
-      <div className="max-w-md mx-auto bg-white dark:bg-slate-800 rounded-lg shadow-md p-8">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
-          Join Our Community
-        </h2>
-
-        <form onSubmit={submit} className="space-y-4">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8">
           <div>
-            <label className="block text-gray-700 dark:text-gray-300 font-semibold mb-2">
-              Full Name
-            </label>
-            <input
-              type="text"
-              value={data.name}
-              onChange={(e) => setData('name', e.currentTarget.value)}
-              className={`w-full px-4 py-2 rounded-lg border ${
-                errors.name ? 'border-red-500' : 'border-gray-300'
-              } dark:bg-slate-700 dark:text-white dark:border-slate-600`}
-              placeholder="John Doe"
-            />
-            {errors.name && (
-              <p className="text-red-500 text-sm mt-1">{errors.name}</p>
-            )}
+            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
+              Join Our Community
+            </h2>
+            <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+              Create your account to start sharing stories
+            </p>
           </div>
 
-          <div>
-            <label className="block text-gray-700 dark:text-gray-300 font-semibold mb-2">
-              Email
-            </label>
-            <input
-              type="email"
-              value={data.email}
-              onChange={(e) => setData('email', e.currentTarget.value)}
-              className={`w-full px-4 py-2 rounded-lg border ${
-                errors.email ? 'border-red-500' : 'border-gray-300'
-              } dark:bg-slate-700 dark:text-white dark:border-slate-600`}
-              placeholder="your@email.com"
-            />
-            {errors.email && (
-              <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+          <form onSubmit={submit} className="mt-8 space-y-6">
+            {errors.form && (
+              <div className="rounded-md bg-red-50 dark:bg-red-900/20 p-4">
+                <p className="text-sm text-red-800 dark:text-red-200">
+                  {errors.form}
+                </p>
+              </div>
             )}
-          </div>
 
-          <div>
-            <label className="block text-gray-700 dark:text-gray-300 font-semibold mb-2">
-              Password
-            </label>
-            <input
-              type="password"
-              value={data.password}
-              onChange={(e) => setData('password', e.currentTarget.value)}
-              className={`w-full px-4 py-2 rounded-lg border ${
-                errors.password ? 'border-red-500' : 'border-gray-300'
-              } dark:bg-slate-700 dark:text-white dark:border-slate-600`}
-              placeholder="••••••••"
-            />
-            {errors.password && (
-              <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-            )}
-          </div>
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="name" className="sr-only">
+                  Full Name
+                </label>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  autoComplete="name"
+                  required
+                  value={formData.name}
+                  onChange={handleChange}
+                  className={`appearance-none relative block w-full px-3 py-2 border ${
+                    errors.name
+                      ? 'border-red-300'
+                      : 'border-gray-300 dark:border-gray-600'
+                  } placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white dark:bg-slate-700 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
+                  placeholder="Full Name"
+                />
+                {errors.name && (
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                    {errors.name}
+                  </p>
+                )}
+              </div>
 
-          <div>
-            <label className="block text-gray-700 dark:text-gray-300 font-semibold mb-2">
-              Confirm Password
-            </label>
-            <input
-              type="password"
-              value={data.password_confirmation}
-              onChange={(e) => setData('password_confirmation', e.currentTarget.value)}
-              className={`w-full px-4 py-2 rounded-lg border ${
-                errors.password_confirmation ? 'border-red-500' : 'border-gray-300'
-              } dark:bg-slate-700 dark:text-white dark:border-slate-600`}
-              placeholder="••••••••"
-            />
-            {errors.password_confirmation && (
-              <p className="text-red-500 text-sm mt-1">{errors.password_confirmation}</p>
-            )}
-          </div>
+              <div>
+                <label htmlFor="email" className="sr-only">
+                  Email address
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                  className={`appearance-none relative block w-full px-3 py-2 border ${
+                    errors.email
+                      ? 'border-red-300'
+                      : 'border-gray-300 dark:border-gray-600'
+                  } placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white dark:bg-slate-700 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
+                  placeholder="Email address"
+                />
+                {errors.email && (
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                    {errors.email}
+                  </p>
+                )}
+              </div>
 
-          <button
-            type="submit"
-            disabled={processing}
-            className="w-full bg-indigo-600 text-white font-semibold py-2 rounded-lg hover:bg-indigo-700 disabled:opacity-50"
-          >
-            {processing ? 'Creating account...' : 'Sign Up'}
-          </button>
-        </form>
+              <div>
+                <label htmlFor="password" className="sr-only">
+                  Password
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                  className={`appearance-none relative block w-full px-3 py-2 border ${
+                    errors.password
+                      ? 'border-red-300'
+                      : 'border-gray-300 dark:border-gray-600'
+                  } placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white dark:bg-slate-700 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
+                  placeholder="Password"
+                />
+                {errors.password && (
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                    {errors.password}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="password_confirmation" className="sr-only">
+                  Confirm Password
+                </label>
+                <input
+                  id="password_confirmation"
+                  name="password_confirmation"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  value={formData.password_confirmation}
+                  onChange={handleChange}
+                  className={`appearance-none relative block w-full px-3 py-2 border ${
+                    errors.password_confirmation
+                      ? 'border-red-300'
+                      : 'border-gray-300 dark:border-gray-600'
+                  } placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white dark:bg-slate-700 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
+                  placeholder="Confirm Password"
+                />
+                {errors.password_confirmation && (
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                    {errors.password_confirmation}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 dark:focus:ring-offset-gray-900"
+              >
+                {loading ? 'Creating account...' : 'Create Account'}
+              </button>
+            </div>
+
+            <div className="text-center">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Already have an account?{' '}
+                <Link
+                  href="/login"
+                  className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+                >
+                  Sign in
+                </Link>
+              </p>
+            </div>
+          </form>
+        </div>
       </div>
     </Layout>
   )

@@ -1,11 +1,19 @@
-import { PropsWithChildren, ReactNode } from 'react'
-import { Link } from '@inertiajs/react'
+import { PropsWithChildren } from 'react'
+import { Link, router } from '@inertiajs/react'
+import { useAuth } from '@/Context/AuthContext'
 
 interface LayoutProps extends PropsWithChildren {
   title?: string
 }
 
 export default function Layout({ children, title }: LayoutProps) {
+  const { user, isAuthenticated, logout } = useAuth()
+
+  const handleLogout = async () => {
+    await logout()
+    router.visit('/login')
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
       {/* Navigation */}
@@ -24,9 +32,31 @@ export default function Layout({ children, title }: LayoutProps) {
               <Link href="/stories" className="text-gray-700 dark:text-gray-300 hover:text-indigo-600">
                 Stories
               </Link>
-              <Link href="/login" className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
-                Login
-              </Link>
+
+              {isAuthenticated ? (
+                <>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-gray-700 dark:text-gray-300">
+                      {user?.name}
+                    </span>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link href="/login" className="text-gray-700 dark:text-gray-300 hover:text-indigo-600">
+                    Login
+                  </Link>
+                  <Link href="/register" className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                    Sign Up
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
