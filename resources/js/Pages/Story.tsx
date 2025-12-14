@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { usePage } from '@inertiajs/react'
+import { usePage, Link } from '@inertiajs/react'
 import Layout from '@/Layouts/Layout'
 import CommentList from '@/Components/CommentList'
 import LikeButton from '@/Components/LikeButton'
@@ -28,15 +28,13 @@ interface Story {
   created_at: string
 }
 
-interface PageProps {
-  params: {
-    id: string
-  }
+interface PageProps extends Record<string, any> {
+  storyId: number
 }
 
 export default function Story() {
   const page = usePage<PageProps>()
-  const storyId = parseInt(page.props.params.id)
+  const storyId = page.props.storyId
   const [story, setStory] = useState<Story | null>(null)
   const [comments, setComments] = useState<Comment[]>([])
   const [loading, setLoading] = useState(true)
@@ -68,8 +66,9 @@ export default function Story() {
   if (loading) {
     return (
       <Layout>
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+        <div className="flex flex-col items-center justify-center min-h-[60vh]">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-indigo-200 border-t-indigo-600 mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400 text-lg">Loading story...</p>
         </div>
       </Layout>
     )
@@ -79,10 +78,14 @@ export default function Story() {
     return (
       <Layout>
         <div className="max-w-3xl mx-auto">
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md p-4">
-            <p className="text-red-800 dark:text-red-200">
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-6 text-center">
+            <div className="text-6xl mb-4">😕</div>
+            <p className="text-xl font-semibold text-red-800 dark:text-red-200 mb-2">
               {error || 'Story not found'}
             </p>
+            <Link href="/stories" className="inline-block mt-4 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all">
+              ← Back to Stories
+            </Link>
           </div>
         </div>
       </Layout>
@@ -90,34 +93,59 @@ export default function Story() {
   }
 
   return (
-    <Layout title={story.title}>
-      <div className="max-w-3xl mx-auto">
-        <article className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-8">
-          <div className="mb-6">
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+    <Layout>
+      <div className="max-w-4xl mx-auto">
+        {/* Back Button */}
+        <Link
+          href="/stories"
+          className="inline-flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 mb-8 transition-colors"
+        >
+          <span>←</span>
+          <span className="font-medium">Back to Stories</span>
+        </Link>
+
+        {/* Story Card */}
+        <article className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-slate-700">
+          {/* Header with gradient */}
+          <div className="h-32 bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400"></div>
+          
+          <div className="p-8 md:p-12">
+            {/* Author Info */}
+            <div className="flex items-center space-x-3 mb-6">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold text-lg">
+                {story.user?.name?.charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <p className="font-semibold text-gray-900 dark:text-white text-lg">{story.user?.name}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {new Date(story.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                </p>
+              </div>
+            </div>
+
+            {/* Title */}
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-8 leading-tight">
               {story.title}
             </h1>
-            <p className="text-gray-600 dark:text-gray-400">
-              By <span className="font-semibold">{story.user?.name}</span> •{' '}
-              {new Date(story.created_at).toLocaleDateString()}
-            </p>
-          </div>
 
-          <div className="prose dark:prose-invert max-w-none mb-8">
-            <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
-              {story.content}
-            </p>
-          </div>
+            {/* Content */}
+            <div className="prose prose-lg dark:prose-invert max-w-none mb-10">
+              <p className="text-xl text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
+                {story.content}
+              </p>
+            </div>
 
-          <div className="flex space-x-4 pt-8 border-t dark:border-slate-700">
-            <LikeButton
-              storyId={story.id}
-              initialLikes={story.like_count}
-              onLikeToggled={fetchStory}
-            />
-            <div className="flex items-center space-x-2 px-4 py-2 bg-gray-100 text-gray-600 dark:bg-slate-800 dark:text-gray-400 rounded-lg">
-              <span className="text-xl">💬</span>
-              <span className="font-semibold">{comments.length} Comments</span>
+            {/* Actions */}
+            <div className="flex items-center space-x-4 pt-8 border-t border-gray-200 dark:border-slate-700">
+              <LikeButton
+                storyId={story.id}
+                initialLikes={story.like_count}
+                onLikeToggled={fetchStory}
+              />
+              <div className="flex items-center space-x-2 px-5 py-3 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-slate-700 dark:to-slate-600 text-gray-700 dark:text-gray-200 rounded-xl font-medium">
+                <span className="text-2xl">💬</span>
+                <span>{comments.length} {comments.length === 1 ? 'Comment' : 'Comments'}</span>
+              </div>
             </div>
           </div>
         </article>

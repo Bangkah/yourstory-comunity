@@ -12,6 +12,10 @@ Route::get('/stories', function () {
     return Inertia::render('Stories');
 });
 
+Route::get('/story/{id}', function ($id) {
+    return Inertia::render('Story', ['storyId' => $id]);
+});
+
 Route::get('/login', function () {
     return Inertia::render('Login');
 });

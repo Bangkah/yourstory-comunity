@@ -84,7 +84,7 @@ class ApiService {
 
   // Auth endpoints
   async login(data: LoginData) {
-    const response = await this.api.post('/login', data)
+    const response = await this.api.post('/auth/login', data)
     const { token, user } = response.data.data || response.data
     localStorage.setItem('auth_token', token)
     localStorage.setItem('user', JSON.stringify(user))
@@ -92,7 +92,7 @@ class ApiService {
   }
 
   async register(data: RegisterData) {
-    const response = await this.api.post('/register', data)
+    const response = await this.api.post('/auth/register', data)
     const { token, user } = response.data.data || response.data
     localStorage.setItem('auth_token', token)
     localStorage.setItem('user', JSON.stringify(user))
@@ -141,12 +141,12 @@ class ApiService {
   }
 
   // Comment endpoints
-  async getComments(storyId: number) {
+  async getComments(storyId: number): Promise<Comment[]> {
     const response = await this.api.get(`/stories/${storyId}/comments`)
     return response.data.data || response.data
   }
 
-  async createComment(storyId: number, content: string, parentId?: number) {
+  async createComment(storyId: number, content: string, parentId?: number): Promise<Comment> {
     const response = await this.api.post(`/stories/${storyId}/comments`, {
       content,
       parent_id: parentId,

@@ -35,6 +35,28 @@ class LoginController extends ApiController
         ], 'Login successful');
     }
 
+    public function register(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+        ]);
+
+        $token = $user->createToken('api-token')->plainTextToken;
+
+        return $this->successResponse([
+            'user' => $user,
+            'token' => $token,
+        ], 'Registration successful', 201);
+    }
+
     public function logout(Request $request): JsonResponse
     {
         $user = $request->user();

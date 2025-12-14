@@ -25,6 +25,7 @@ Route::middleware('throttle:60,1')->group(function () {
 
 // Auth endpoints with stricter rate limiting
 Route::post('auth/login', [LoginController::class, 'login'])->middleware('throttle:5,1');
+Route::post('auth/register', [LoginController::class, 'register'])->middleware('throttle:5,1');
 
 // Protected endpoints (require Sanctum token)
 Route::middleware('auth:sanctum')->group(function () {
