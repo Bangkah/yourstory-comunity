@@ -41,6 +41,22 @@ export default function Layout({ children, title }: LayoutProps) {
               >
                 Stories
               </Link>
+              <a 
+                href="https://yourstory-orcin.vercel.app/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors font-medium flex items-center"
+              >
+                Main App <span className="ml-1 text-xs">↗</span>
+              </a>
+              <a 
+                href="https://yourstory-portfolio.vercel.app/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors font-medium flex items-center"
+              >
+                About <span className="ml-1 text-xs">↗</span>
+              </a>
 
               {isAuthenticated ? (
                 <>
@@ -91,8 +107,51 @@ export default function Layout({ children, title }: LayoutProps) {
       {/* Footer */}
       <footer className="bg-white dark:bg-slate-900 shadow-md mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center text-gray-600 dark:text-gray-400">
-            <p>&copy; 2024 Your Story Community. All rights reserved.</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            <div>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Your Story Community</h3>
+              <p className="text-gray-600 dark:text-gray-400">
+                Part of YourStory ecosystem - connecting storytellers worldwide.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Quick Links</h3>
+              <ul className="space-y-2">
+                <li>
+                  <a href="https://yourstory-orcin.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
+                    YourStory App ↗
+                  </a>
+                </li>
+                <li>
+                  <a href="https://yourstory-portfolio.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
+                    About Company ↗
+                  </a>
+                </li>
+                <li>
+                  <Link href="/stories" className="text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
+                    Explore Stories
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Community</h3>
+              <ul className="space-y-2">
+                <li>
+                  <Link href="/register" className="text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
+                    Join Community
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/login" className="text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
+                    Login
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-gray-200 dark:border-slate-800 pt-8 text-center text-gray-600 dark:text-gray-400">
+            <p>&copy; 2025 <a href="https://yourstory-portfolio.vercel.app/" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-600 dark:hover:text-indigo-400">YourStory</a>. All rights reserved.</p>
           </div>
         </div>
       </footer>

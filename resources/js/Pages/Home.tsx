@@ -47,13 +47,13 @@ export default function Home() {
               ✨ Welcome to Your Story Community
             </div>
             <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 dark:text-white leading-tight">
-              Share Your Stories
+              Connect with
               <span className="block bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                with the World
+                Storytellers Worldwide
               </span>
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
-              A platform for writers, storytellers, and creative minds to share their unique perspectives and connect with a global community.
+              The community hub for <a href="https://yourstory-orcin.vercel.app/" target="_blank" rel="noopener noreferrer" className="font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">YourStory</a> - where writers, storytellers, and creative minds share their unique perspectives and connect globally.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
@@ -85,21 +85,75 @@ export default function Home() {
         </div>
       </div>
 
+      {/* YourStory Ecosystem */}
+      <div className="mt-24">
+        <div className="text-center mb-16">
+          <h3 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            Part of YourStory Ecosystem
+          </h3>
+          <p className="text-xl text-gray-600 dark:text-gray-400">
+            Discover our complete storytelling platform
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+          <a 
+            href="https://yourstory-orcin.vercel.app/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="group relative bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2 border-2 border-indigo-200 dark:border-indigo-800 hover:border-indigo-400"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-400 to-purple-400 opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity"></div>
+            <div className="relative">
+              <div className="text-6xl mb-6 transform group-hover:scale-110 transition-transform">📱</div>
+              <h4 className="text-2xl font-bold mb-3 text-gray-900 dark:text-white">
+                YourStory App
+              </h4>
+              <p className="text-gray-600 dark:text-gray-300 text-lg mb-4">
+                Our main storytelling platform - Create, edit, and publish your stories with powerful tools
+              </p>
+              <span className="text-indigo-600 dark:text-indigo-400 font-semibold flex items-center">
+                Visit App <span className="ml-2">→</span>
+              </span>
+            </div>
+          </a>
+          <a 
+            href="https://yourstory-portfolio.vercel.app/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="group relative bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2 border-2 border-purple-200 dark:border-purple-800 hover:border-purple-400"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-400 to-pink-400 opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity"></div>
+            <div className="relative">
+              <div className="text-6xl mb-6 transform group-hover:scale-110 transition-transform">🏢</div>
+              <h4 className="text-2xl font-bold mb-3 text-gray-900 dark:text-white">
+                About YourStory
+              </h4>
+              <p className="text-gray-600 dark:text-gray-300 text-lg mb-4">
+                Learn about our company, mission, and the team behind YourStory platform
+              </p>
+              <span className="text-purple-600 dark:text-purple-400 font-semibold flex items-center">
+                Learn More <span className="ml-2">→</span>
+              </span>
+            </div>
+          </a>
+        </div>
+      </div>
+
       {/* Features */}
       <div className="mt-24">
         <div className="text-center mb-16">
           <h3 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Why Choose Us?
+            Why Join Our Community?
           </h3>
           <p className="text-xl text-gray-600 dark:text-gray-400">
-            Everything you need to share your creative journey
+            Everything you need to connect and grow
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
-            { icon: '✨', title: 'Easy to Use', description: 'Simple and intuitive interface designed for writers', color: 'from-blue-400 to-cyan-400' },
-            { icon: '🌍', title: 'Global Community', description: 'Connect with passionate writers worldwide', color: 'from-indigo-400 to-purple-400' },
-            { icon: '🔒', title: 'Secure & Private', description: 'Your stories are safely protected', color: 'from-purple-400 to-pink-400' },
+            { icon: '🤝', title: 'Connect & Share', description: 'Engage with fellow storytellers through comments and discussions', color: 'from-blue-400 to-cyan-400' },
+            { icon: '🌍', title: 'Global Community', description: 'Connect with passionate writers from around the world', color: 'from-indigo-400 to-purple-400' },
+            { icon: '💬', title: 'Get Feedback', description: 'Receive valuable feedback and support from the community', color: 'from-purple-400 to-pink-400' },
           ].map((feature, i) => (
             <div 
               key={i} 
