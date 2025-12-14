@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\StoreStoryRequest;
 use App\Http\Requests\UpdateStoryRequest;
 use App\Models\Story;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class StoryController extends Controller
+class StoryController extends ApiController
 {
     public function index(Request $request): JsonResponse
     {
@@ -64,7 +64,7 @@ class StoryController extends Controller
 
         $stories = $query->paginate($perPage);
 
-        return response()->json($stories);
+        return $this->paginatedResponse($stories, 'Stories retrieved successfully');
     }
 
     public function show(Request $request, Story $story): JsonResponse
@@ -73,7 +73,7 @@ class StoryController extends Controller
 
         $story->load(['user:id,name,role'])->loadCount(['likes', 'allComments as comments_total']);
 
-        return response()->json($story);
+        return $this->successResponse($story, 'Story retrieved');
     }
 
     public function store(StoreStoryRequest $request): JsonResponse
@@ -89,7 +89,7 @@ class StoryController extends Controller
             'is_published' => $data['is_published'] ?? true,
         ]);
 
-        return response()->json($story, 201);
+        return $this->createdResponse($story, 'Story created');
     }
 
     public function update(UpdateStoryRequest $request, Story $story): JsonResponse
@@ -99,7 +99,7 @@ class StoryController extends Controller
         $story->fill($request->validated());
         $story->save();
 
-        return response()->json($story);
+        return $this->successResponse($story, 'Story updated');
     }
 
     public function destroy(Request $request, Story $story): JsonResponse
@@ -108,7 +108,7 @@ class StoryController extends Controller
 
         $story->delete();
 
-        return response()->json(['message' => 'Story deleted']);
+        return $this->successResponse(null, 'Story deleted');
     }
 
     /**
@@ -117,7 +117,7 @@ class StoryController extends Controller
     public function trashed(Request $request): JsonResponse
     {
         if ($request->user()->role !== 'admin') {
-            return response()->json(['message' => 'Unauthorized'], 403);
+            return $this->forbiddenResponse('Unauthorized');
         }
 
         $perPage = min($request->integer('per_page', 15), 100);
@@ -128,7 +128,7 @@ class StoryController extends Controller
             ->latest('deleted_at')
             ->paginate($perPage);
 
-        return response()->json($stories);
+        return $this->paginatedResponse($stories, 'Trashed stories');
     }
 
     /**
@@ -137,21 +137,18 @@ class StoryController extends Controller
     public function restore(Request $request, $storyId): JsonResponse
     {
         if ($request->user()->role !== 'admin') {
-            return response()->json(['message' => 'Unauthorized'], 403);
+            return $this->forbiddenResponse('Unauthorized');
         }
 
         $story = Story::withTrashed()->findOrFail($storyId);
 
         if (!$story->trashed()) {
-            return response()->json(['message' => 'Story is not deleted'], 400);
+            return $this->errorResponse('Story is not deleted', 400);
         }
 
         $story->restore();
 
-        return response()->json([
-            'message' => 'Story restored successfully',
-            'data' => $story,
-        ]);
+        return $this->successResponse($story, 'Story restored successfully');
     }
 
     /**
@@ -160,18 +157,15 @@ class StoryController extends Controller
     public function forceDelete(Request $request, $storyId): JsonResponse
     {
         if ($request->user()->role !== 'admin') {
-            return response()->json(['message' => 'Unauthorized'], 403);
+            return $this->forbiddenResponse('Unauthorized');
         }
 
         $story = Story::withTrashed()->findOrFail($storyId);
         $storyTitle = $story->title;
         $story->forceDelete();
 
-        return response()->json([
-            'message' => "Story '{$storyTitle}' permanently deleted",
-            'data' => [
-                'deleted_story_id' => $storyId,
-            ],
-        ]);
+        return $this->successResponse([
+            'deleted_story_id' => $storyId,
+        ], "Story '{$storyTitle}' permanently deleted");
     }
 }

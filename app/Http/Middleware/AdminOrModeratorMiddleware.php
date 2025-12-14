@@ -7,19 +7,16 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class AdminMiddleware
+class AdminOrModeratorMiddleware
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!$request->user() || $request->user()->role !== User::ROLE_ADMIN) {
+        $user = $request->user();
+
+        if (!$user || !in_array($user->role, [User::ROLE_ADMIN, User::ROLE_MODERATOR])) {
             return response()->json([
                 'success' => false,
-                'message' => 'Unauthorized. Admin access required.',
+                'message' => 'Unauthorized. Admin or moderator access required.',
             ], 403);
         }
 

@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class NotificationController extends Controller
+class NotificationController extends ApiController
 {
     /**
      * Get user notifications (paginated)
@@ -18,7 +17,7 @@ class NotificationController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(20);
 
-        return response()->json($notifications);
+        return $this->paginatedResponse($notifications, 'Notifications retrieved');
     }
 
     /**
@@ -31,7 +30,7 @@ class NotificationController extends Controller
             ->whereNull('read_at')
             ->count();
 
-        return response()->json(['unread_count' => $count]);
+        return $this->successResponse(['unread_count' => $count], 'Unread count retrieved');
     }
 
     /**
@@ -45,7 +44,7 @@ class NotificationController extends Controller
 
         $notification->update(['read_at' => now()]);
 
-        return response()->json($notification);
+        return $this->successResponse($notification, 'Notification marked as read');
     }
 
     /**
@@ -58,7 +57,7 @@ class NotificationController extends Controller
             ->whereNull('read_at')
             ->update(['read_at' => now()]);
 
-        return response()->json(['message' => 'All notifications marked as read']);
+        return $this->successResponse(null, 'All notifications marked as read');
     }
 
     /**
@@ -72,6 +71,6 @@ class NotificationController extends Controller
 
         $notification->delete();
 
-        return response()->json(['message' => 'Notification deleted']);
+        return $this->successResponse(null, 'Notification deleted');
     }
 }

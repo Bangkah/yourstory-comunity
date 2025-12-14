@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Events\CommentCreated;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\StoreCommentRequest;
 use App\Models\Comment;
 use App\Models\Story;
@@ -11,7 +11,7 @@ use App\Services\Firebase\FirestoreCommentBroadcaster;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 
-class CommentController extends Controller
+class CommentController extends ApiController
 {
     public function index(Story $story): JsonResponse
     {
@@ -22,7 +22,7 @@ class CommentController extends Controller
 
         $tree = $this->buildTree($comments);
 
-        return response()->json($tree);
+        return $this->successResponse($tree, 'Comments retrieved');
     }
 
     public function store(StoreCommentRequest $request, Story $story): JsonResponse
@@ -54,7 +54,7 @@ class CommentController extends Controller
         // Dispatch event for notifications
         CommentCreated::dispatch($comment->load('user'));
 
-        return response()->json($comment->load('user'), 201);
+        return $this->createdResponse($comment->load('user'), 'Comment created');
     }
 
     public function reply(StoreCommentRequest $request, Story $story, Comment $comment): JsonResponse

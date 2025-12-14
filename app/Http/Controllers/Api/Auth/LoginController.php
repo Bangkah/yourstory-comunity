@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Api\Auth;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\ApiController;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
-class LoginController extends Controller
+class LoginController extends ApiController
 {
     public function login(Request $request): JsonResponse
     {
@@ -18,27 +19,41 @@ class LoginController extends Controller
 
         $user = User::where('email', $credentials['email'])->first();
 
-        if (!$user || !password_verify($credentials['password'], $user->password)) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
+        if (!$user || !Hash::check($credentials['password'], $user->password)) {
+            return $this->errorResponse('Invalid credentials', 401);
+        }
+
+        if ($user->is_suspended) {
+            return $this->forbiddenResponse('Account suspended');
         }
 
         $token = $user->createToken('api-token')->plainTextToken;
 
-        return response()->json([
+        return $this->successResponse([
             'user' => $user,
             'token' => $token,
-        ]);
+        ], 'Login successful');
     }
 
     public function logout(Request $request): JsonResponse
     {
-        $request->user()?->currentAccessToken()?->delete();
+        $user = $request->user();
 
-        return response()->json(['message' => 'Logged out']);
+        if (!$user) {
+            return $this->unauthorizedResponse();
+        }
+
+        /** @var \Laravel\Sanctum\PersonalAccessToken|null $token */
+        $token = $user->currentAccessToken();
+        if ($token) {
+            $token->delete();
+        }
+
+        return $this->successResponse(null, 'Logged out');
     }
 
     public function me(Request $request): JsonResponse
     {
-        return response()->json($request->user());
+        return $this->successResponse($request->user(), 'Authenticated user');
     }
 }

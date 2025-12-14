@@ -33,9 +33,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('auth/logout', [LoginController::class, 'logout']);
         Route::get('auth/me', [LoginController::class, 'me']);
 
-        Route::get('stories', [StoryController::class, 'index']);
-        Route::get('stories/{story}', [StoryController::class, 'show']);
-
         Route::get('notifications', [NotificationController::class, 'index']);
         Route::get('notifications/unread-count', [NotificationController::class, 'unreadCount']);
         Route::put('notifications/{notificationId}/read', [NotificationController::class, 'markAsRead']);
@@ -60,7 +57,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('users/{user}/follow', [FollowerController::class, 'unfollow']);
     });
 
-    // Admin endpoints with strict rate limiting
+    // Admin user management (admin only)
     Route::middleware(['admin', 'throttle:60,1'])->group(function () {
         Route::get('admin/users', [AdminUserController::class, 'index']);
         Route::get('admin/users/{user}', [AdminUserController::class, 'show']);
@@ -68,17 +65,22 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('admin/users/{user}/suspend', [AdminUserController::class, 'toggleSuspend']);
         Route::delete('admin/users/{user}', [AdminUserController::class, 'destroy']);
 
-        Route::get('admin/stories', [AdminStoryController::class, 'index']);
-        Route::get('admin/stories/{story}', [AdminStoryController::class, 'show']);
-        Route::put('admin/stories/{story}/status', [AdminStoryController::class, 'updateStatus']);
-        Route::delete('admin/stories/{story}', [AdminStoryController::class, 'destroy']);
-
-        // Soft delete endpoints
+        // Soft delete endpoints (admin only)
         Route::get('admin/stories/trashed', [StoryController::class, 'trashed']);
         Route::post('admin/stories/{id}/restore', [StoryController::class, 'restore']);
         Route::delete('admin/stories/{id}/force-delete', [StoryController::class, 'forceDelete']);
     });
+
+    // Story moderation (admin or moderator)
+    Route::middleware(['admin_or_moderator', 'throttle:60,1'])->group(function () {
+        Route::get('admin/stories', [AdminStoryController::class, 'index']);
+        Route::get('admin/stories/{story}', [AdminStoryController::class, 'show']);
+        Route::put('admin/stories/{story}/status', [AdminStoryController::class, 'updateStatus']);
+        Route::delete('admin/stories/{story}', [AdminStoryController::class, 'destroy']);
+    });
 });
+
+
 
 
 

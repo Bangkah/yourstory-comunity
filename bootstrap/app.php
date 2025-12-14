@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'auth' => \App\Http\Middleware\Authenticate::class,
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'admin_or_moderator' => \App\Http\Middleware\AdminOrModeratorMiddleware::class,
         ]);
 
         // Apply API error handling to all API requests

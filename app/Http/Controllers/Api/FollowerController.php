@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class FollowerController extends \Illuminate\Routing\Controller
+class FollowerController extends ApiController
 {
     /**
      * Follow a user
@@ -17,28 +17,25 @@ class FollowerController extends \Illuminate\Routing\Controller
 
         // Prevent self-following
         if ($currentUser->id === $user->id) {
-            return response()->json(['message' => 'You cannot follow yourself'], 400);
+            return $this->errorResponse('You cannot follow yourself', 400);
         }
 
         // Check if already following
         if ($currentUser->isFollowing($user)) {
-            return response()->json(['message' => 'Already following this user'], 400);
+            return $this->errorResponse('Already following this user', 400);
         }
 
         // Create follow relationship
         $currentUser->following()->attach($user->id);
 
-        return response()->json([
-            'message' => 'Successfully followed user',
-            'data' => [
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'role' => $user->role,
-                ],
-                'is_following' => true,
+        return $this->createdResponse([
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'role' => $user->role,
             ],
-        ], 201);
+            'is_following' => true,
+        ], 'Successfully followed user');
     }
 
     /**
@@ -50,23 +47,20 @@ class FollowerController extends \Illuminate\Routing\Controller
 
         // Check if following
         if (!$currentUser->isFollowing($user)) {
-            return response()->json(['message' => 'Not following this user'], 400);
+            return $this->errorResponse('Not following this user', 400);
         }
 
         // Remove follow relationship
         $currentUser->following()->detach($user->id);
 
-        return response()->json([
-            'message' => 'Successfully unfollowed user',
-            'data' => [
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'role' => $user->role,
-                ],
-                'is_following' => false,
+        return $this->successResponse([
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'role' => $user->role,
             ],
-        ]);
+            'is_following' => false,
+        ], 'Successfully unfollowed user');
     }
 
     /**
@@ -80,7 +74,7 @@ class FollowerController extends \Illuminate\Routing\Controller
             ->select('id', 'name', 'role')
             ->paginate($perPage);
 
-        return response()->json($followers);
+        return $this->paginatedResponse($followers, 'Followers retrieved');
     }
 
     /**
@@ -94,7 +88,7 @@ class FollowerController extends \Illuminate\Routing\Controller
             ->select('id', 'name', 'role')
             ->paginate($perPage);
 
-        return response()->json($following);
+        return $this->paginatedResponse($following, 'Following retrieved');
     }
 
     /**
@@ -102,13 +96,11 @@ class FollowerController extends \Illuminate\Routing\Controller
      */
     public function counts(User $user): JsonResponse
     {
-        return response()->json([
-            'data' => [
-                'user_id' => $user->id,
-                'followers_count' => $user->followers()->count(),
-                'following_count' => $user->following()->count(),
-            ],
-        ]);
+        return $this->successResponse([
+            'user_id' => $user->id,
+            'followers_count' => $user->followers()->count(),
+            'following_count' => $user->following()->count(),
+        ], 'Counts retrieved');
     }
 
     /**
@@ -119,15 +111,13 @@ class FollowerController extends \Illuminate\Routing\Controller
         $currentUser = $request->user();
 
         if (!$currentUser) {
-            return response()->json(['data' => ['is_following' => false]]);
+            return $this->successResponse(['is_following' => false], 'Follow status');
         }
 
-        return response()->json([
-            'data' => [
-                'user_id' => $user->id,
-                'is_following' => $currentUser->isFollowing($user),
-                'is_followed_by' => $user->isFollowing($currentUser),
-            ],
-        ]);
+        return $this->successResponse([
+            'user_id' => $user->id,
+            'is_following' => $currentUser->isFollowing($user),
+            'is_followed_by' => $user->isFollowing($currentUser),
+        ], 'Follow status');
     }
 }

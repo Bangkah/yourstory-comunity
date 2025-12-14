@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Http\Controllers\Api\ApiController;
 use App\Models\Story;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class StoryController extends \Illuminate\Routing\Controller
+class StoryController extends ApiController
 {
     /**
      * List all stories with moderation capabilities
@@ -15,7 +16,7 @@ class StoryController extends \Illuminate\Routing\Controller
     {
         // Check moderator or admin permission
         if (!in_array($request->user()->role, ['admin', 'moderator'])) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+            return $this->forbiddenResponse('Unauthorized');
         }
 
         $perPage = min($request->integer('per_page', 15), 100);
@@ -54,7 +55,7 @@ class StoryController extends \Illuminate\Routing\Controller
             ->withCount(['likes', 'allComments'])
             ->paginate($perPage);
 
-        return response()->json($stories);
+        return $this->paginatedResponse($stories, 'Stories retrieved');
     }
 
     /**
@@ -63,7 +64,7 @@ class StoryController extends \Illuminate\Routing\Controller
     public function show(Request $request, Story $story): JsonResponse
     {
         if (!in_array($request->user()->role, ['admin', 'moderator'])) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+            return $this->forbiddenResponse('Unauthorized');
         }
 
         $story->load([
@@ -72,9 +73,7 @@ class StoryController extends \Illuminate\Routing\Controller
             'allComments' => fn($q) => $q->with('user:id,name'),
         ])->loadCount(['likes', 'allComments']);
 
-        return response()->json([
-            'data' => $story,
-        ]);
+        return $this->successResponse($story, 'Story retrieved');
     }
 
     /**
@@ -83,7 +82,7 @@ class StoryController extends \Illuminate\Routing\Controller
     public function updateStatus(Request $request, Story $story): JsonResponse
     {
         if (!in_array($request->user()->role, ['admin', 'moderator'])) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+            return $this->forbiddenResponse('Unauthorized');
         }
 
         $validated = $request->validate([
@@ -93,14 +92,11 @@ class StoryController extends \Illuminate\Routing\Controller
         $oldStatus = $story->is_published;
         $story->update($validated);
 
-        return response()->json([
-            'message' => 'Story status updated',
-            'data' => [
-                'story_id' => $story->id,
-                'old_status' => $oldStatus,
-                'new_status' => $story->is_published,
-            ],
-        ]);
+        return $this->successResponse([
+            'story_id' => $story->id,
+            'old_status' => $oldStatus,
+            'new_status' => $story->is_published,
+        ], 'Story status updated');
     }
 
     /**
@@ -109,17 +105,14 @@ class StoryController extends \Illuminate\Routing\Controller
     public function destroy(Request $request, Story $story): JsonResponse
     {
         if (!in_array($request->user()->role, ['admin', 'moderator'])) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+            return $this->forbiddenResponse('Unauthorized');
         }
 
         $storyTitle = $story->title;
         $story->delete();
 
-        return response()->json([
-            'message' => "Story '{$storyTitle}' has been deleted",
-            'data' => [
-                'deleted_story_id' => $story->id,
-            ],
-        ]);
+        return $this->successResponse([
+            'deleted_story_id' => $story->id,
+        ], "Story '{$storyTitle}' has been deleted");
     }
 }

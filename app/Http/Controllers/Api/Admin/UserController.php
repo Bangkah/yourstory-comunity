@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Http\Controllers\Api\ApiController;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class UserController extends \Illuminate\Routing\Controller
+class UserController extends ApiController
 {
     /**
      * List all users with filtering and searching
@@ -15,7 +16,7 @@ class UserController extends \Illuminate\Routing\Controller
     {
         // Check admin permission
         if ($request->user()->role !== User::ROLE_ADMIN) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+            return $this->forbiddenResponse('Unauthorized');
         }
 
         $perPage = min($request->integer('per_page', 15), 100);
@@ -47,7 +48,7 @@ class UserController extends \Illuminate\Routing\Controller
         $users = $query->select('id', 'name', 'email', 'role', 'created_at', 'updated_at')
             ->paginate($perPage);
 
-        return response()->json($users);
+        return $this->paginatedResponse($users, 'Users retrieved');
     }
 
     /**
@@ -56,15 +57,13 @@ class UserController extends \Illuminate\Routing\Controller
     public function show(Request $request, User $user): JsonResponse
     {
         if ($request->user()->role !== User::ROLE_ADMIN) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+            return $this->forbiddenResponse('Unauthorized');
         }
 
         $user->load(['stories', 'comments']);
         $user->append(['followers_count', 'following_count']);
 
-        return response()->json([
-            'data' => $user,
-        ]);
+        return $this->successResponse($user, 'User retrieved');
     }
 
     /**
@@ -73,12 +72,12 @@ class UserController extends \Illuminate\Routing\Controller
     public function updateRole(Request $request, User $user): JsonResponse
     {
         if ($request->user()->role !== User::ROLE_ADMIN) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+            return $this->forbiddenResponse('Unauthorized');
         }
 
         // Prevent admin from changing their own role
         if ($request->user()->id === $user->id) {
-            return response()->json(['message' => 'Cannot change your own role'], 400);
+            return $this->errorResponse('Cannot change your own role', 400);
         }
 
         $validated = $request->validate([
@@ -88,14 +87,11 @@ class UserController extends \Illuminate\Routing\Controller
         $oldRole = $user->role;
         $user->update(['role' => $validated['role']]);
 
-        return response()->json([
-            'message' => 'User role updated successfully',
-            'data' => [
-                'user_id' => $user->id,
-                'old_role' => $oldRole,
-                'new_role' => $user->role,
-            ],
-        ]);
+        return $this->successResponse([
+            'user_id' => $user->id,
+            'old_role' => $oldRole,
+            'new_role' => $user->role,
+        ], 'User role updated successfully');
     }
 
     /**
@@ -104,23 +100,20 @@ class UserController extends \Illuminate\Routing\Controller
     public function toggleSuspend(Request $request, User $user): JsonResponse
     {
         if ($request->user()->role !== User::ROLE_ADMIN) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+            return $this->forbiddenResponse('Unauthorized');
         }
 
         // Prevent admin from suspending themselves
         if ($request->user()->id === $user->id) {
-            return response()->json(['message' => 'Cannot suspend your own account'], 400);
+            return $this->errorResponse('Cannot suspend your own account', 400);
         }
 
         $user->update(['is_suspended' => !$user->is_suspended]);
 
-        return response()->json([
-            'message' => $user->is_suspended ? 'User suspended' : 'User unsuspended',
-            'data' => [
-                'user_id' => $user->id,
-                'is_suspended' => $user->is_suspended,
-            ],
-        ]);
+        return $this->successResponse([
+            'user_id' => $user->id,
+            'is_suspended' => $user->is_suspended,
+        ], $user->is_suspended ? 'User suspended' : 'User unsuspended');
     }
 
     /**
@@ -129,22 +122,19 @@ class UserController extends \Illuminate\Routing\Controller
     public function destroy(Request $request, User $user): JsonResponse
     {
         if ($request->user()->role !== User::ROLE_ADMIN) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+            return $this->forbiddenResponse('Unauthorized');
         }
 
         // Prevent admin from deleting themselves
         if ($request->user()->id === $user->id) {
-            return response()->json(['message' => 'Cannot delete your own account'], 400);
+            return $this->errorResponse('Cannot delete your own account', 400);
         }
 
         $userName = $user->name;
         $user->delete();
 
-        return response()->json([
-            'message' => "User '{$userName}' has been deleted",
-            'data' => [
-                'deleted_user_id' => $user->id,
-            ],
-        ]);
+        return $this->successResponse([
+            'deleted_user_id' => $user->id,
+        ], "User '{$userName}' has been deleted");
     }
 }
