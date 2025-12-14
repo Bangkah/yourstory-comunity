@@ -1,63 +1,186 @@
-# Your Story Community - Backend API
+# Your Story Community
 
-🚀 **A production-ready REST API for a modern social storytelling platform**
+> **A modern full-stack social storytelling platform** - Share stories, connect with others, and build your community.
 
-Robust, well-tested backend for sharing stories, comments, likes, following users, and real-time notifications. Built with Laravel 11, PHP 8.4, and MySQL 8.0.
-
-[![Backend Status](https://img.shields.io/badge/Backend-Production%20Ready-brightgreen)]()
-[![Test Coverage](https://img.shields.io/badge/Tests-25%2F31%20Passing-yellow)]()
-[![API Endpoints](https://img.shields.io/badge/Endpoints-32%2B-blue)]()
-[![Documentation](https://img.shields.io/badge/Docs-Complete-success)]()
+[![Backend](https://img.shields.io/badge/Backend-Laravel%2011-FF2D20)]()
+[![Frontend](https://img.shields.io/badge/Frontend-React%2019-61DAFB)]()
+[![Database](https://img.shields.io/badge/Database-MySQL%208.0-4479A1)]()
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED)]()
 [![License](https://img.shields.io/badge/License-MIT-green)]()
+
+**Live Demo:** *(Coming soon)*  
+**Repository:** https://github.com/Bangkah/yourstory-community
 
 ---
 
 ## 📋 Table of Contents
 
-- [Quick Start](#quick-start)
+- [Overview](#overview)
 - [Features](#features)
 - [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [API Overview](#api-overview)
-- [Documentation](#documentation)
+- [Quick Start](#quick-start)
 - [Installation](#installation)
-- [Testing](#testing)
+- [Documentation](#documentation)
+- [Project Structure](#project-structure)
+- [API Reference](#api-reference)
 - [Development](#development)
+- [Testing](#testing)
 - [Deployment](#deployment)
-- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## 🌟 Overview
+
+**Your Story Community** is a full-stack web application that empowers users to share their stories, engage with content through comments and likes, follow other users, and receive real-time notifications. Built with modern technologies and best practices, it's designed to be scalable, maintainable, and user-friendly.
+
+### Why Your Story Community?
+
+- 🎨 **Beautiful UI** - Modern, responsive design with Tailwind CSS
+- ⚡ **Fast & Smooth** - React 19 with Vite for lightning-fast performance
+- 🔐 **Secure** - Token-based authentication with Laravel Sanctum
+- 📱 **Mobile-First** - Responsive design that works on all devices
+- 🚀 **Production-Ready** - Docker support, comprehensive testing, and documentation
+
+---
+
+## ✨ Features
+
+### Core Functionality
+- ✅ **User Authentication** - Secure login/register with token-based auth
+- ✅ **Story Management** - Create, read, update, delete stories with rich text
+- ✅ **Comments & Replies** - Nested comments with threading support
+- ✅ **Likes System** - Like stories and track engagement
+- ✅ **Follow System** - Follow users and build your network
+- ✅ **Notifications** - Real-time notifications for interactions
+- ✅ **User Profiles** - Customizable profiles with avatars
+- ✅ **Search & Filter** - Find stories by title, author, or tags
+- ✅ **Admin Panel** - Content moderation and user management
+
+### User Experience
+- ✅ **Modern UI** - Gradient designs, smooth animations, intuitive layout
+- ✅ **Responsive Design** - Works perfectly on mobile, tablet, and desktop
+- ✅ **Dark Mode** - Eye-friendly dark theme support
+- ✅ **Loading States** - Visual feedback for all async operations
+- ✅ **Error Handling** - User-friendly error messages
+- ✅ **Form Validation** - Client and server-side validation
+
+### Technical Features
+- ✅ **REST API** - 32+ well-documented endpoints
+- ✅ **Role-Based Access** - Admin, Moderator, Member roles
+- ✅ **Rate Limiting** - Protection against abuse
+- ✅ **Soft Deletes** - Content recovery capability
+- ✅ **Event-Driven** - Asynchronous notifications via queue
+- ✅ **Database Optimization** - Indexes, eager loading, caching
+- ✅ **Comprehensive Tests** - Feature and unit tests
+- ✅ **Docker Support** - Easy deployment with containers
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| **React** | 19.x | UI library |
+| **TypeScript** | 5.x | Type safety |
+| **Inertia.js** | 2.x | Server-side routing |
+| **Tailwind CSS** | 3.4.3 | Styling framework |
+| **Vite** | 7.2.7 | Build tool |
+| **Axios** | 1.x | HTTP client |
+
+### Backend
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| **Laravel** | 11.x | PHP framework |
+| **PHP** | 8.4 | Programming language |
+| **MySQL** | 8.0 | Database |
+| **Redis** | Latest | Cache & queue |
+| **Sanctum** | 4.x | Authentication |
+| **PHPUnit** | 11 | Testing |
+
+### Infrastructure
+| Technology | Purpose |
+|------------|---------|
+| **Docker** | Containerization |
+| **Nginx** | Web server |
+| **Composer** | PHP dependencies |
+| **NPM** | JavaScript dependencies |
 
 ---
 
 ## 🚀 Quick Start
 
-Get the backend running in 3 minutes with Docker:
+### Prerequisites
+- Docker & Docker Compose
+- Git
+- Node.js 18+ (if building frontend locally)
+
+### Installation
 
 ```bash
-# 1. Start containers
+# 1. Clone repository
+git clone https://github.com/Bangkah/yourstory-community.git
+cd yourstory-community
+
+# 2. Start Docker containers
 docker-compose up -d
 
-# 2. Install dependencies
+# 3. Install backend dependencies
 docker-compose exec app composer install
 
-# 3. Setup environment
+# 4. Setup environment
 docker-compose exec app cp .env.example .env
 docker-compose exec app php artisan key:generate
 
-# 4. Setup database
+# 5. Configure database (update .env in container)
+docker-compose exec app sed -i 's/DB_CONNECTION=sqlite/DB_CONNECTION=mysql/' .env
+docker-compose exec app sed -i 's/# DB_HOST=127.0.0.1/DB_HOST=db/' .env
+docker-compose exec app sed -i 's/# DB_PORT=3306/DB_PORT=3306/' .env
+docker-compose exec app sed -i 's/# DB_DATABASE=laravel/DB_DATABASE=yourstory_comunity/' .env
+docker-compose exec app sed -i 's/# DB_USERNAME=root/DB_USERNAME=root/' .env
+docker-compose exec app sed -i 's/# DB_PASSWORD=/DB_PASSWORD=secret/' .env
+
+# 6. Run migrations
 docker-compose exec app php artisan migrate --seed
 
-# 5. Start queue worker (new terminal)
-docker-compose exec app php artisan queue:work
+# 7. Install frontend dependencies
+npm install
 
-# Done! API is at http://localhost:8080/api
+# 8. Build frontend assets
+npm run build
+
+# 9. Clear caches
+docker-compose exec app php artisan config:clear
+docker-compose exec app php artisan cache:clear
+
+# Done! 🎉
+# Application: http://localhost:8080
+# API: http://localhost:8080/api
 ```
 
-**Test the API:**
+### Test the Application
+
+**Via Web Browser:**
+```
+Open: http://localhost:8080
+- Register a new account
+- Login with your credentials
+- Create your first story!
+```
+
+**Via API:**
 ```bash
-# Login
-curl -X POST http://localhost:8080/api/auth/login \
+# Register user
+curl -X POST http://localhost:8080/api/auth/register \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@yourstory.local","password":"password123"}'
+  -d '{
+    "name": "John Doe",
+    "email": "john@example.com",
+    "password": "password123",
+    "password_confirmation": "password123"
+  }'
 
 # Get all stories
 curl http://localhost:8080/api/stories
@@ -65,307 +188,227 @@ curl http://localhost:8080/api/stories
 
 ---
 
-## ✨ Features
+## 📖 Documentation
 
-### Core Functionality
-- ✅ **User Authentication** - Token-based with Laravel Sanctum
-- ✅ **Role-Based Access** - Admin, Moderator, Member roles
-- ✅ **Story Management** - Create, read, update, delete with soft deletes
-- ✅ **Comments & Replies** - Nested comments with tree structure
-- ✅ **Likes System** - Toggle likes with count tracking
-- ✅ **Follow System** - Follow/unfollow with count management
-- ✅ **Notifications** - Real-time event-driven notifications (async)
-- ✅ **Search & Filter** - Full-text search and advanced filtering
-- ✅ **Admin Panel** - User and story moderation
+We provide comprehensive documentation for all aspects of the project:
 
-### Quality & Performance
-- ✅ **32+ API Endpoints** - All RESTful, well-documented
-- ✅ **25/31 Tests Passing** - 80% test coverage
-- ✅ **Rate Limiting** - Per-action throttling configured
-- ✅ **Error Handling** - Global error middleware with logging
-- ✅ **Database Optimization** - Indexes, eager loading, denormalization
-- ✅ **Soft Deletes** - Story recovery capability
-- ✅ **Caching** - Redis integration for performance
+### Main Documentation
+- **[README.md](README.md)** - This file, overview and quick start
+- **[FRONTEND_DOCUMENTATION.md](FRONTEND_DOCUMENTATION.md)** - Complete frontend guide
+- **[BACKEND_DOCUMENTATION.md](BACKEND_DOCUMENTATION.md)** - Complete backend guide
+- **[API_DOCUMENTATION.md](API_DOCUMENTATION.md)** - API endpoints reference
 
-### Documentation
-- ✅ **BACKEND_DOCUMENTATION.md** - 2000+ lines comprehensive guide
-- ✅ **TESTING_GUIDE.md** - Complete testing instructions
-- ✅ **DATABASE_SCHEMA.md** - Complete schema with ERD
-- ✅ **SETUP_GUIDE.md** - Detailed installation guide
-- ✅ **Postman Collection** - Ready-to-import API collection
-- ✅ **API Documentation** - Endpoint reference with examples
+### Additional Guides
+- **[SETUP_GUIDE.md](SETUP_GUIDE.md)** - Detailed installation instructions
+- **[TESTING_GUIDE.md](TESTING_GUIDE.md)** - Testing procedures
+- **[DATABASE_SCHEMA.md](DATABASE_SCHEMA.md)** - Database structure
+- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Production deployment guide
+- **[REGISTRATION_FIX_SUMMARY.md](REGISTRATION_FIX_SUMMARY.md)** - Recent fixes log
+
+### API Tools
+- **[postman_collection.json](postman_collection.json)** - Postman collection
+- **[postman_environment.json](postman_environment.json)** - Postman environment
+- **[api-test.sh](api-test.sh)** - Bash script for API testing
 
 ---
 
-## 🛠 Tech Stack
-
-### Backend Framework
-- **Framework:** Laravel 11.x
-- **Language:** PHP 8.4
-- **Web Server:** Nginx
-- **Database:** MySQL 8.0
-- **Cache:** Redis
-- **Queue:** Laravel Queue (Redis)
-
-### Key Libraries
-- **Authentication:** Laravel Sanctum 4.x
-- **Database ORM:** Eloquent
-- **Validation:** Laravel Validation
-- **Testing:** PHPUnit 11 + RefreshDatabase
-- **HTTP Client:** Guzzle
-
-### Infrastructure
-- **Containerization:** Docker & Docker Compose
-- **Task Queue:** Redis + Laravel Queue
-- **Logging:** Monolog
-- **Email:** Laravel Mail (configurable)
-
----
-
-## 📁 Project Structure
+## � Project Structure
 
 ```
-app/
-├── Http/
-│   ├── Controllers/
-│   │   ├── Api/
-│   │   │   ├── ApiController.php (Base with AuthorizesRequests)
-│   │   │   ├── AuthController.php (Login, logout, me)
-│   │   │   ├── StoryController.php (CRUD + search/filter/sort)
-│   │   │   ├── CommentController.php (Root + nested replies)
-│   │   │   ├── LikeController.php (Toggle like)
-│   │   │   ├── FollowerController.php (Follow system)
-│   │   │   ├── NotificationController.php (Notifications)
-│   │   │   └── Admin/
-│   │   │       ├── UserController.php (User management)
-│   │   │       └── StoryController.php (Story moderation)
-│   │   └── Middleware/
-│   │       ├── HandleApiErrors.php (Global error handler)
-│   │       ├── Admin.php (Admin check)
-│   │       ├── AdminOrModerator.php (Role check)
-│   │       └── CORS.php (Cross-origin requests)
-│   └── Requests/ (Form validation)
+yourstory-community/
+├── app/                          # Backend application code
+│   ├── Http/
+│   │   ├── Controllers/         # API controllers
+│   │   │   └── Api/
+│   │   │       ├── Auth/        # Authentication controllers
+│   │   │       ├── Admin/       # Admin controllers
+│   │   │       └── ...          # Story, Comment, Like controllers
+│   │   ├── Middleware/          # Custom middleware
+│   │   └── Requests/            # Form request validation
+│   ├── Models/                  # Eloquent models
+│   ├── Events/                  # Event classes
+│   ├── Listeners/               # Event listeners
+│   ├── Policies/                # Authorization policies
+│   └── Services/                # Business logic services
 │
-├── Models/
-│   ├── User.php (Roles, relationships)
-│   ├── Story.php (SoftDeletes, counts)
-│   ├── Comment.php (Nested replies, depth)
-│   ├── Like.php (User-story relationship)
-│   └── Notification.php (UUID, JSON data)
+├── resources/                    # Frontend resources
+│   ├── js/
+│   │   ├── Pages/               # React page components
+│   │   ├── Layouts/             # Layout components
+│   │   ├── Context/             # React context (auth)
+│   │   ├── Services/            # API client service
+│   │   └── app.tsx              # React entry point
+│   ├── css/
+│   │   └── app.css              # Tailwind CSS
+│   └── views/
+│       └── app.blade.php        # Laravel view template
 │
-├── Events/
-│   ├── CommentCreated.php
-│   └── StoryLiked.php
+├── routes/
+│   ├── api.php                  # API routes (32+ endpoints)
+│   ├── web.php                  # Web routes
+│   └── console.php              # Artisan commands
 │
-├── Listeners/
-│   ├── SendCommentNotification.php (Queued)
-│   └── SendLikeNotification.php (Queued)
+├── database/
+│   ├── migrations/              # Database migrations
+│   ├── seeders/                 # Database seeders
+│   └── factories/               # Model factories
 │
-├── Traits/
-│   └── ApiResponse.php (Standardized JSON responses)
+├── tests/
+│   ├── Feature/                 # Feature tests
+│   └── Unit/                    # Unit tests
 │
-└── Providers/
-    ├── AppServiceProvider.php
-    ├── AuthServiceProvider.php
-    ├── EventServiceProvider.php
-    └── RouteServiceProvider.php
-
-routes/
-├── api.php (32+ API endpoints)
-├── web.php (Health check)
-└── console.php (Artisan commands)
-
-database/
-├── migrations/ (9 tables)
-│   ├── Users, Stories, Comments, Likes
-│   ├── Followers, Notifications
-│   └── Personal access tokens
-├── seeders/ (Test data)
-│   ├── UserSeeder (7 users)
-│   ├── StorySeeder (15 stories)
-│   └── DatabaseSeeder (orchestrator)
-└── factories/ (Model factories)
-
-tests/
-├── Feature/ (31 feature tests)
-│   ├── AuthTest.php (Authentication)
-│   ├── StoryTest.php (Story CRUD)
-│   ├── CommentTest.php (Comments)
-│   ├── LikeTest.php (Likes)
-│   ├── FollowerTest.php (Following)
-│   └── NotificationTest.php (Notifications)
-└── Unit/ (Unit tests)
-
-config/
-├── app.php (App config)
-├── auth.php (Authentication)
-├── database.php (Database)
-├── cache.php (Caching)
-├── queue.php (Queue)
-└── [6+ more configs]
-
-docker/
-├── Dockerfile (Laravel + PHP 8.4)
-├── nginx/ (Nginx config)
-└── [Docker configs]
-
-docs/
-├── BACKEND_DOCUMENTATION.md (2000+ lines)
-├── TESTING_GUIDE.md (Complete testing)
-├── DATABASE_SCHEMA.md (Schema & ERD)
-├── SETUP_GUIDE.md (Installation)
-├── REQUIREMENTS.md (Full checklist)
-├── postman_collection.json (API collection)
-└── postman_environment.json (Test environment)
+├── public/
+│   └── build/                   # Compiled frontend assets
+│
+├── docker/                       # Docker configuration
+│   └── nginx/                   # Nginx config
+│
+├── config/                       # Laravel configuration
+├── storage/                      # Application storage
+└── vendor/                       # PHP dependencies
 ```
 
 ---
 
-## 🔌 API Overview
+## � API Reference
 
-### Authentication (3 endpoints)
-- `POST /auth/login` - User login with email/password
-- `POST /auth/logout` - Revoke authentication token
-- `GET /auth/me` - Get authenticated user info
+### Authentication Endpoints
 
-### Stories (5 endpoints)
-- `GET /stories` - List all stories (search, filter, sort, paginate)
-- `GET /stories/{id}` - Get single story details
-- `POST /stories` - Create new story
-- `PUT /stories/{id}` - Update story
-- `DELETE /stories/{id}` - Soft delete story
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| POST | `/api/auth/register` | Register new user | No |
+| POST | `/api/auth/login` | Login user | No |
+| POST | `/api/auth/logout` | Logout user | Yes |
+| GET | `/api/auth/me` | Get current user | Yes |
 
-### Comments (3 endpoints)
-- `GET /stories/{id}/comments` - Get story comments (nested tree)
-- `POST /stories/{id}/comments` - Create root comment
-- `POST /stories/{id}/comments/{id}/reply` - Reply to comment
+### Story Endpoints
 
-### Likes (1 endpoint)
-- `POST /stories/{id}/likes/toggle` - Toggle like on story
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/stories` | Get all stories | No |
+| GET | `/api/stories/{id}` | Get single story | No |
+| POST | `/api/stories` | Create story | Yes |
+| PUT | `/api/stories/{id}` | Update story | Yes |
+| DELETE | `/api/stories/{id}` | Delete story | Yes |
 
-### Followers (5 endpoints)
-- `GET /users/{id}/followers` - List followers (paginated)
-- `GET /users/{id}/following` - List following (paginated)
-- `GET /users/{id}/follow-counts` - Get follower counts
-- `POST /users/{id}/follow` - Follow user
-- `DELETE /users/{id}/follow` - Unfollow user
+### Comment Endpoints
 
-### Notifications (5 endpoints)
-- `GET /notifications` - List notifications (paginated)
-- `GET /notifications/unread-count` - Get unread count
-- `PUT /notifications/{id}/read` - Mark as read
-- `POST /notifications/read-all` - Mark all as read
-- `DELETE /notifications/{id}` - Delete notification
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/stories/{id}/comments` | Get story comments | No |
+| POST | `/api/stories/{id}/comments` | Create comment | Yes |
+| DELETE | `/api/comments/{id}` | Delete comment | Yes |
 
-### Admin - Users (5 endpoints)
-- `GET /admin/users` - List all users (search, filter, paginate)
-- `GET /admin/users/{id}` - Get user details
-- `PUT /admin/users/{id}/role` - Update user role
-- `POST /admin/users/{id}/suspend` - Suspend/unsuspend user
-- `DELETE /admin/users/{id}` - Delete user
+### Like Endpoints
 
-### Admin - Stories (5 endpoints)
-- `GET /admin/stories` - List stories for moderation
-- `GET /admin/stories/{id}` - Get story details with metadata
-- `PUT /admin/stories/{id}/status` - Update publication status
-- `GET /admin/stories/trashed` - List soft-deleted stories
-- `POST /admin/stories/{id}/restore` - Restore deleted story
-- `DELETE /admin/stories/{id}/force-delete` - Permanently delete
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| POST | `/api/stories/{id}/like` | Toggle like | Yes |
 
-**Total: 32+ endpoints** - All documented with examples
+### Follow Endpoints
 
----
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| POST | `/api/users/{id}/follow` | Follow user | Yes |
+| DELETE | `/api/users/{id}/unfollow` | Unfollow user | Yes |
+| GET | `/api/users/{id}/followers` | Get followers | No |
+| GET | `/api/users/{id}/following` | Get following | No |
 
-## 📚 Documentation
+### Notification Endpoints
 
-Comprehensive documentation available for all aspects:
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/notifications` | Get notifications | Yes |
+| GET | `/api/notifications/unread-count` | Get unread count | Yes |
+| PUT | `/api/notifications/{id}/read` | Mark as read | Yes |
 
-### For API Users
-- **[TESTING_GUIDE.md](./TESTING_GUIDE.md)** - Complete testing guide with cURL examples, Postman setup, workflow scripts
-- **[postman_collection.json](./postman_collection.json)** - Ready-to-import Postman collection
-- **[postman_environment.json](./postman_environment.json)** - Test environment with variables
-- **[API_DOCUMENTATION.md](./API_DOCUMENTATION.md)** - API endpoint reference
+**Complete API documentation:** See [API_DOCUMENTATION.md](API_DOCUMENTATION.md)
 
-### For Developers
-- **[BACKEND_DOCUMENTATION.md](./BACKEND_DOCUMENTATION.md)** - 2000+ line comprehensive guide covering:
-  - Architecture & design patterns
-  - Complete API reference with request/response examples
-  - Database schema with 9 tables
-  - Models & relationships
-  - Events & listeners
-  - Middleware & authorization
-  - Rate limiting strategy
-  - Testing guide
-  - Development guidelines
-  - Deployment checklist
-  - Troubleshooting (6 common issues)
-  - Future enhancements roadmap
-
-### For System Administrators
-- **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** - Complete installation & setup (Docker & manual)
-- **[DATABASE_SCHEMA.md](./DATABASE_SCHEMA.md)** - Database documentation with:
-  - Entity relationship diagram
-  - Table definitions with all columns
-  - Foreign keys & constraints
-  - Indexes & performance tips
-  - Common query patterns
-  - Backup strategy
-  - Maintenance tasks
-
-### For Project Managers
-- **[REQUIREMENTS.md](./REQUIREMENTS.md)** - Complete requirements checklist with:
-  - Backend feature completeness (95-100%)
-  - Frontend requirements (ready to start)
-  - Deployment checklist
-  - Known issues & limitations
-  - Performance benchmarks
-  - API statistics
+**Postman Collection:** Import [postman_collection.json](postman_collection.json)
 
 ---
 
-## 🚀 Installation
+## 💻 Development
 
-### Option 1: Docker (Recommended)
+### Backend Development
 
-**Prerequisites:** Docker & Docker Compose
-
+**Run Laravel development server:**
 ```bash
-# 1. Start containers
-docker-compose up -d
-
-# 2. Install dependencies
-docker-compose exec app composer install
-
-# 3. Configure environment
-docker-compose exec app cp .env.example .env
-docker-compose exec app php artisan key:generate
-
-# 4. Setup database
-docker-compose exec app php artisan migrate --seed
-
-# 5. Start queue worker (new terminal)
-docker-compose exec app php artisan queue:work
-
-# 6. Verify
-curl http://localhost:8080/api/stories
+docker-compose exec app php artisan serve --host=0.0.0.0 --port=8000
 ```
 
-### Option 2: Manual Setup
+**Run migrations:**
+```bash
+docker-compose exec app php artisan migrate
+```
 
-**Prerequisites:** PHP 8.4+, MySQL 8.0, Redis, Composer
+**Seed database:**
+```bash
+docker-compose exec app php artisan db:seed
+```
 
-See [SETUP_GUIDE.md](./SETUP_GUIDE.md#manual-setup) for detailed instructions.
+**Clear caches:**
+```bash
+docker-compose exec app php artisan cache:clear
+docker-compose exec app php artisan config:clear
+docker-compose exec app php artisan route:clear
+```
 
-### Database Seeding
+**Run queue worker:**
+```bash
+docker-compose exec app php artisan queue:work
+```
 
-Pre-configured test data:
-- **7 Users:** 1 admin, 1 moderator, 5 members
-- **15 Stories:** 3 per member with realistic content
-- **30 Comments:** Mix of root and nested replies
-- **40 Likes:** Distributed across stories
-- **20+ Followers:** Random follow relationships
+### Frontend Development
 
-All ready to test immediately after `php artisan migrate --seed`
+**Run development server with HMR:**
+```bash
+npm run dev
+# Vite dev server at http://localhost:5173
+# Hot Module Replacement enabled
+```
+
+**Build for production:**
+```bash
+npm run build
+# Output: public/build/
+# CSS: ~28.32 KB (gzipped: ~5.12 KB)
+# JS: ~382.32 KB (gzipped: ~124.53 KB)
+```
+
+**Type checking:**
+```bash
+npx tsc --noEmit
+```
+
+### Code Quality
+
+**PHP Code Style (Pint):**
+```bash
+docker-compose exec app ./vendor/bin/pint
+```
+
+**ESLint (if configured):**
+```bash
+npm run lint
+```
+
+### Database Management
+
+**Access MySQL CLI:**
+```bash
+docker-compose exec db mysql -u root -psecret yourstory_comunity
+```
+
+**Export database:**
+```bash
+docker-compose exec db mysqldump -u root -psecret yourstory_comunity > backup.sql
+```
+
+**Import database:**
+```bash
+docker-compose exec -T db mysql -u root -psecret yourstory_comunity < backup.sql
+```
 
 ---
 
@@ -374,6 +417,150 @@ All ready to test immediately after `php artisan migrate --seed`
 ### Run All Tests
 ```bash
 docker-compose exec app php artisan test
+```
+
+### Run Specific Test Suite
+```bash
+# Feature tests only
+docker-compose exec app php artisan test --testsuite=Feature
+
+# Unit tests only
+docker-compose exec app php artisan test --testsuite=Unit
+
+# Specific test file
+docker-compose exec app php artisan test tests/Feature/AuthTest.php
+```
+
+### Test Coverage
+```bash
+docker-compose exec app php artisan test --coverage
+```
+
+### Current Test Status
+- **Total Tests:** 31
+- **Passing:** 25 (80%)
+- **Feature Tests:** Auth, Story, Comment, Like, Follow, Notification
+- **Unit Tests:** Model relationships, helpers
+
+**Detailed testing guide:** See [TESTING_GUIDE.md](TESTING_GUIDE.md)
+
+**Total: 32+ endpoints** - All documented with examples
+
+---
+
+---
+
+## 🚀 Deployment
+
+### Production Checklist
+
+**Before deploying to production:**
+
+1. **Environment Configuration**
+   ```bash
+   APP_ENV=production
+   APP_DEBUG=false
+   APP_URL=https://yourdomain.com
+   ```
+
+2. **Database Configuration**
+   - Use production MySQL credentials
+   - Set `DB_CONNECTION=mysql`
+   - Configure backup strategy
+
+3. **Caching**
+   ```bash
+   php artisan config:cache
+   php artisan route:cache
+   php artisan view:cache
+   ```
+
+4. **Queue Workers**
+   ```bash
+   php artisan queue:restart
+   # Setup supervisor for queue workers
+   ```
+
+5. **Security**
+   - Update all secrets (`APP_KEY`, database passwords)
+   - Configure CORS properly
+   - Set up SSL/TLS certificate
+   - Enable rate limiting
+
+6. **Assets**
+   ```bash
+   npm run build
+   php artisan storage:link
+   ```
+
+### Docker Production
+
+**Build production image:**
+```bash
+docker build -t yourstory-community:latest .
+```
+
+**Run with docker-compose:**
+```bash
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+**Complete deployment guide:** See [DEPLOYMENT.md](DEPLOYMENT.md)
+
+---
+
+## 🔧 Configuration
+
+### Environment Variables
+
+**Required:**
+```env
+APP_NAME="Your Story Community"
+APP_ENV=local|production
+APP_KEY=base64:...
+APP_URL=http://localhost:8080
+
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=yourstory_comunity
+DB_USERNAME=root
+DB_PASSWORD=secret
+
+SESSION_DRIVER=file
+CACHE_STORE=file
+QUEUE_CONNECTION=sync
+```
+
+**Optional:**
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=mailhog
+MAIL_PORT=1025
+
+REDIS_HOST=redis
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+```
+
+### Docker Services
+
+| Service | Port | Description |
+|---------|------|-------------|
+| app | 8080 | Laravel application (Nginx) |
+| db | 3306 | MySQL database |
+| redis | 6379 | Redis cache/queue |
+
+**Access services:**
+```bash
+# Application
+http://localhost:8080
+
+# MySQL (from host)
+mysql -h 127.0.0.1 -P 3306 -u root -psecret yourstory_comunity
+
+# Redis (from host)
+redis-cli -h 127.0.0.1 -p 6379
 ```
 
 **Expected Result:**
@@ -411,106 +598,257 @@ See [TESTING_GUIDE.md](./TESTING_GUIDE.md) for complete testing documentation.
 
 ### Making Changes
 
-```bash
-# 1. Make code changes
-nano app/Http/Controllers/Api/StoryController.php
-
-# 2. Run tests to verify
-docker-compose exec app php artisan test
-
-# 3. Clear cache
-docker-compose exec app php artisan cache:clear
-
-# 4. Check logs
-docker-compose logs -f app
-```
-
-### Available Commands
-
-```bash
-# Laravel artisan
-docker-compose exec app php artisan <command>
-
-# Examples:
-docker-compose exec app php artisan tinker          # Interactive shell
-docker-compose exec app php artisan queue:work      # Process jobs
-docker-compose exec app php artisan migrate         # Run migrations
-docker-compose exec app php artisan db:seed         # Seed database
-docker-compose exec app php artisan storage:link    # Link storage
-```
-
-### Code Quality
-
-```bash
-# Run tests with coverage
-docker-compose exec app php artisan test --coverage
-
-# Format code
-docker-compose exec app ./vendor/bin/pint
-
-# Analyze code
-docker-compose exec app ./vendor/bin/phpstan
-```
-
----
-
-## 🚢 Deployment
-
-### Pre-Deployment Checklist
-
-```bash
-# 1. Run all tests
-docker-compose exec app php artisan test
-
-# 2. Check for errors
-docker-compose exec app php artisan tinker
-
-# 3. Verify environment
-grep APP_ENV .env  # Should be 'production'
-
-# 4. Optimize for production
-docker-compose exec app php artisan config:cache
-docker-compose exec app php artisan route:cache
-docker-compose exec app php artisan view:cache
-
-# 5. Database backup
-docker-compose exec mysql mysqldump -u root -p database > backup.sql
-
-# 6. Deploy
-git push production main  # Or your deployment method
-```
-
-### Production Environment Variables
-
-See [SETUP_GUIDE.md](./SETUP_GUIDE.md#production-environment) for complete .env configuration.
-
-### Docker Production Build
-
-```bash
-# Build production image
-docker build -t yourstory:latest .
-
-# Push to registry
-docker tag yourstory:latest myregistry.com/yourstory:latest
-docker push myregistry.com/yourstory:latest
-
-# Deploy with Docker Compose
-docker-compose -f docker-compose.prod.yml up -d
-```
-
 ---
 
 ## 🐛 Troubleshooting
 
 ### Common Issues
 
-**"Connection refused" when accessing API**
+**1. Database Connection Failed**
 ```bash
-# Check containers running
-docker-compose ps
+# Check database is running
+docker-compose ps db
 
-# View logs
-docker-compose logs -f app
+# Verify .env configuration
+docker-compose exec app cat .env | grep DB_
+
+# Test connection
+docker-compose exec app php artisan tinker
+>>> DB::connection()->getPdo();
+```
+
+**2. "Too Many Requests" (429 Error)**
+- Throttle limit reached (5 requests/minute for auth endpoints)
+- Wait 1 minute or clear rate limit cache
+```bash
+docker-compose exec app php artisan cache:clear
+```
+
+**3. Frontend Assets Not Loading**
+```bash
+# Rebuild frontend
+npm run build
+
+# Clear Laravel cache
+docker-compose exec app php artisan view:clear
+docker-compose exec app php artisan config:clear
+```
+
+**4. Migrations Failing**
+```bash
+# Check migration status
+docker-compose exec app php artisan migrate:status
+
+# Fresh migrations
+docker-compose exec app php artisan migrate:fresh --seed
+```
+
+**5. Queue Jobs Not Processing**
+```bash
+# Start queue worker
+docker-compose exec app php artisan queue:work
+
+# Check failed jobs
+docker-compose exec app php artisan queue:failed
+```
+
+**6. Permission Errors (Storage)**
+```bash
+# Fix storage permissions
+docker-compose exec app chmod -R 775 storage bootstrap/cache
+docker-compose exec app chown -R www-data:www-data storage bootstrap/cache
+```
+
+**Complete troubleshooting:** See [BACKEND_DOCUMENTATION.md](BACKEND_DOCUMENTATION.md#troubleshooting)
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Here's how you can help:
+
+### Getting Started
+
+1. **Fork the repository**
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/yourstory-community.git
+   cd yourstory-community
+   ```
+
+2. **Create a feature branch**
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+
+3. **Make your changes**
+   - Follow existing code style
+   - Write tests for new features
+   - Update documentation
+
+4. **Run tests**
+   ```bash
+   docker-compose exec app php artisan test
+   npm run build
+   ```
+
+5. **Commit your changes**
+   ```bash
+   git add .
+   git commit -m "Add: your feature description"
+   ```
+
+6. **Push and create PR**
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+   Then open a Pull Request on GitHub
+
+### Contribution Guidelines
+
+**Code Style:**
+- PHP: Follow PSR-12 standards
+- JavaScript/TypeScript: Use ESLint rules
+- Run `./vendor/bin/pint` for PHP formatting
+
+**Commit Messages:**
+- Use clear, descriptive messages
+- Format: `Type: Description`
+- Types: `Add`, `Fix`, `Update`, `Remove`, `Refactor`
+
+**Pull Requests:**
+- Include description of changes
+- Reference related issues
+- Ensure all tests pass
+- Update documentation if needed
+
+**What to Contribute:**
+- 🐛 Bug fixes
+- ✨ New features
+- 📝 Documentation improvements
+- ✅ Test coverage
+- 🎨 UI/UX enhancements
+- ⚡ Performance optimizations
+
+### Development Setup for Contributors
+
+```bash
+# 1. Clone your fork
+git clone https://github.com/YOUR_USERNAME/yourstory-community.git
+
+# 2. Add upstream remote
+git remote add upstream https://github.com/Bangkah/yourstory-community.git
+
+# 3. Create .env from example
+cp .env.example .env
+
+# 4. Start development environment
+docker-compose up -d
+docker-compose exec app composer install
+npm install
+
+# 5. Run migrations
+docker-compose exec app php artisan migrate --seed
+
+# 6. Build frontend
+npm run dev
+```
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+```
+MIT License
+
+Copyright (c) 2025 Your Story Community
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+---
+
+## 📞 Contact & Support
+
+**Repository:** https://github.com/Bangkah/yourstory-community  
+**Issues:** https://github.com/Bangkah/yourstory-community/issues  
+**Discussions:** https://github.com/Bangkah/yourstory-community/discussions
+
+### Need Help?
+
+1. **Check Documentation** - Read the docs first
+2. **Search Issues** - Your question might be answered
+3. **Open an Issue** - Describe your problem clearly
+4. **Join Discussions** - Ask questions, share ideas
+
+---
+
+## 🙏 Acknowledgments
+
+Built with these amazing technologies:
+
+- **[Laravel](https://laravel.com)** - The PHP Framework
+- **[React](https://react.dev)** - UI Library
+- **[Inertia.js](https://inertiajs.com)** - Modern Monolith
+- **[Tailwind CSS](https://tailwindcss.com)** - Utility-first CSS
+- **[Vite](https://vitejs.dev)** - Next Generation Frontend Tooling
+- **[Docker](https://www.docker.com)** - Containerization Platform
+
+---
+
+## 🗺️ Roadmap
+
+### Version 1.1 (Planned)
+- [ ] Real-time notifications with WebSockets
+- [ ] Story tags and categories
+- [ ] Advanced search with Elasticsearch
+- [ ] Story bookmarking
+- [ ] User mentions in comments
+
+### Version 1.2 (Planned)
+- [ ] Story drafts and scheduling
+- [ ] Rich text editor (WYSIWYG)
+- [ ] Image uploads for stories
+- [ ] User reputation system
+- [ ] Content reporting system
+
+### Version 2.0 (Future)
+- [ ] Mobile apps (iOS/Android)
+- [ ] Story analytics dashboard
+- [ ] Social media sharing
+- [ ] Email notifications
+- [ ] Multi-language support
+
+**See full roadmap:** [ROADMAP.md](ROADMAP.md)
+
+---
+
+<div align="center">
+
+**Made with ❤️ by the Your Story Community Team**
+
+⭐ Star us on GitHub if you find this project useful!
+
+[Report Bug](https://github.com/Bangkah/yourstory-community/issues) · [Request Feature](https://github.com/Bangkah/yourstory-community/issues) · [Documentation](https://github.com/Bangkah/yourstory-community#documentation)
+
+</div>
 ```
 
 **"No such table" error**

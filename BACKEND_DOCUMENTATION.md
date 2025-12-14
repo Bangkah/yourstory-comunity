@@ -2,7 +2,8 @@
 
 **Version:** 1.0.0  
 **Last Updated:** December 14, 2025  
-**API Base URL:** `http://localhost:8080/api`
+**API Base URL:** `http://localhost:8080/api`  
+**Repository:** https://github.com/Bangkah/yourstory-community
 
 ---
 
